@@ -5,18 +5,10 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { useState } from 'react';
+import { FancyPersonRow } from '../FancyPersonRow';
 
 
-type PersonInfoStuff = { firstname: string, lastname: string };
 
-function FancyPersonRow({firstname, lastname} : PersonInfoStuff) {
-  return(
-    <View style={{ backgroundColor: "yellow", height: 80 }}>
-      <Text style={{ fontSize: 25 }}>{ firstname }</Text>
-      <Text>{ lastname }</Text>
-    </View>
-  );
-}
 
 
 export default function HomeScreen() {
@@ -36,14 +28,31 @@ export default function HomeScreen() {
     }
   ]);
 
-  const [myname, setMyname] = useState("");
+  const [inputfirstname, setInputfirstname] = useState("");
+  const [inputlastname, setInputlastname] = useState("");
+
+  const [errormessage, setErrormessage] = useState("");
 
   function addPerson() {
-    console.log(myname);
+    console.log(inputfirstname);
 
-    setPeople([...people, {firstname: myname, lastname: ""}]);
+    if(inputfirstname == "") {
+      // Inget förnamn 
+      setErrormessage("Inget förnamn");
+      return;
+    }
+    if(inputlastname == "") {
+      // Inget efternamn 
+      setErrormessage("Inget efternamn");
+      return;
+    }
 
-    setMyname("");
+    setErrormessage("");
+
+    setPeople([...people, {firstname: inputfirstname, lastname: inputlastname}]);
+
+    setInputfirstname("");
+    setInputlastname("");
 
     console.log(people);
   }
@@ -53,9 +62,19 @@ export default function HomeScreen() {
 
       <View style={{ backgroundColor: "red", height: 100 }}></View>
 
+      { errormessage != "" &&
+        <Text style={nicestyle.nicetext}>{ errormessage }</Text>
+      }
+
       <TextInput 
-        onChangeText={setMyname} 
-        value={myname} 
+        onChangeText={setInputfirstname} 
+        value={inputfirstname} 
+        style={{ backgroundColor: "white", height: 50 }}
+      />
+
+      <TextInput 
+        onChangeText={setInputlastname} 
+        value={inputlastname} 
         style={{ backgroundColor: "white", height: 50 }}
       />
 
@@ -69,6 +88,15 @@ export default function HomeScreen() {
     </View>
   );
 }
+
+
+export const nicestyle = StyleSheet.create({
+  nicetext: {
+    fontSize: 25,
+    color: "black"
+  }
+});
+
 
 const styles = StyleSheet.create({
   titleContainer: {
